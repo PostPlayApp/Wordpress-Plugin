@@ -6,4 +6,4 @@
 #postp-metabox-wrap #postp-switch{display: inline-block;}
 #postp-metabox-wrap #postp-switch .switch-split{float: left; padding: 10px 20px;background: #eee;color: #eee;font-weight: bold;cursor: pointer;-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;border: 1px solid #eee;}
 #postp-metabox-wrap #postp-switch .switch-split.active{background: #DA5B5B;border:1px solid #CBCEA9;}
-#postp-metabox-wrap #postp-switch::after{content: ""; clear: both; display: block;}
+#postp-metabox-wrap #postp-switch::after{content: ""; clear: both; display: block;height: 10px;}
