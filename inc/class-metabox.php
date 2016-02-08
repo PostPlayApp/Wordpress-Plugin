@@ -3,15 +3,15 @@
 class PostPlayMetabox {
 
     public function PostPlayMetabox() {
-        add_action('add_meta_boxes', array($this, 'wpdocs_register_meta_boxes'));
-        add_action('save_post', array($this, 'wpdocs_save_meta_box'));
+        add_action('add_meta_boxes', array($this, 'register_meta_box'));
+        add_action('save_post', array($this, 'save_meta_box'));
     }
 
     /**
      * Register meta box(es).
      */
-    public function wpdocs_register_meta_boxes() {
-        add_meta_box('meta-box-id', __('My Meta Box', 'textdomain'), array($this, 'wpdocs_my_display_callback'), 'post', 'side', 'core');
+    public function register_meta_box() {
+        add_meta_box('postplay-metabox', __('PostPlay Audio', POSTPLAY_LANG_SLUG), array($this, 'metabox_content'), null, 'side', 'core');
     }
 
     /**
@@ -19,8 +19,8 @@ class PostPlayMetabox {
      *
      * @param WP_Post $post Current post object.
      */
-    public function wpdocs_my_display_callback($post) {
-        echo 'test';
+    public function metabox_content($post) {
+        include 'view-metabox.php';
     }
 
     /**
@@ -28,7 +28,7 @@ class PostPlayMetabox {
      *
      * @param int $post_id Post ID
      */
-    public function wpdocs_save_meta_box($post_id) {
+    public function save_meta_box($post_id) {
 
     }
 

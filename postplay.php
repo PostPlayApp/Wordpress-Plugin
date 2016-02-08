@@ -12,4 +12,4 @@
 
 require_once 'inc/core-import.php';
 
-new PostPlay();
+new PostPlay(__FILE__);
