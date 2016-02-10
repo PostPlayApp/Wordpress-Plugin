@@ -9,9 +9,9 @@
 
     <div id="postp-switch-wrap">
         <div id="postp-switch">
-            <div class="switch-split switch-yes<?php echo $current_saved_check == '1' ? ' active': ''; ?>">Yes</div>
-            <div class="switch-split switch-no<?php echo $current_saved_check !== '1' ? ' active': ''; ?>">No</div>
-            <input type="hidden" name="postplay_send" id="postplay_send" value="<?php echo $current_saved_check !== '1' ? '0': '1'; ?>">
+            <div class="switch-split switch-yes">Yes</div>
+            <div class="switch-split switch-no active">No</div>
+            <input type="hidden" name="postplay_send" id="postplay_send" value="0">
         </div>
     </div>
 </div>

@@ -20,8 +20,7 @@ class PostPlayMetabox {
      * @param WP_Post $post Current post object.
      */
     public function metabox_content($post) {
-        wp_nonce_field( 'postplay_nonce_ver', 'postplay_meta_box_nonce' );
-        $current_saved_check = get_post_meta($post->ID, '_postplay_submit', true);
+        wp_nonce_field('postplay_nonce_ver', 'postplay_meta_box_nonce');
         include 'view-metabox.php';
     }
 
@@ -31,6 +30,7 @@ class PostPlayMetabox {
      * @param int $post_id Post ID
      */
     public function save_meta_box($post_id) {
+
         if (!isset($_POST['postplay_meta_box_nonce'])) {
             return $post_id;
         }
@@ -44,6 +44,9 @@ class PostPlayMetabox {
             return $post_id;
         }
 
+        if (wp_is_post_revision($post_id))
+            return;
+
         if ('page' == $_POST['post_type']) {
             if (!current_user_can('edit_page', $post_id)) {
                 return $post_id;
@@ -56,8 +59,35 @@ class PostPlayMetabox {
 
         $the_value = sanitize_text_field($_POST['postplay_send']);
 
-        // Update the meta field.
-        update_post_meta($post_id, '_postplay_submit', $the_value);
+        /*
+         * 
+         * Publish data to server
+         * 
+         */
+
+        if ($the_value == '1') {
+            $response = wp_remote_post('http://postplay.dev/api/v1/publish', array(
+                'method' => 'POST',
+                'timeout' => 20,
+                'redirection' => 5,
+                'httpversion' => '1.0',
+                'blocking' => true,
+                'body' => array(
+                    'email' => 'prabodamadushan@gmail.com',
+                    'api_key' => 'TfbWGY6EugIghpWHnvXt',
+                    'pp_title' => $_POST['post_title'],
+                    'pp_content' => $_POST['content'],
+                    'pp_url' => get_permalink($post_id),
+                )
+                    )
+            );
+
+            if (is_wp_error($response)) {
+                $error_message = $response->get_error_message();
+            } else {
+                update_post_meta($post_id, '_postplay_submit', $the_value);
+            }
+        }
     }
 
 }
