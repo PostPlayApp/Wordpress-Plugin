@@ -21,7 +21,7 @@ class PostPlayMetabox {
      */
     public function metabox_content($post) {
         wp_nonce_field('postplay_nonce_ver', 'postplay_meta_box_nonce');
-        include 'view-metabox.php';
+        include 'views/view-metabox.php';
     }
 
     /**
@@ -73,7 +73,7 @@ class PostPlayMetabox {
                 'httpversion' => '1.0',
                 'blocking' => true,
                 'body' => array(
-                    'email' => 'prabodamadushan@gmail.com',
+                    'api_email' => 'prabodamadushan@gmail.com',
                     'api_key' => 'TfbWGY6EugIghpWHnvXt',
                     'pp_title' => $_POST['post_title'],
                     'pp_content' => $_POST['content'],
