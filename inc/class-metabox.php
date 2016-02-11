@@ -58,6 +58,11 @@ class PostPlayMetabox {
         }
 
         $the_value = sanitize_text_field($_POST['postplay_send']);
+        $api_email = esc_attr(get_option('_postplay_api_email'));
+        $api_key = esc_attr(get_option('_postplay_api_key'));
+
+        if (empty($api_email) || empty($api_key))
+            return;
 
         /*
          * 
@@ -69,12 +74,10 @@ class PostPlayMetabox {
             $response = wp_remote_post('http://postplay.dev/api/v1/publish', array(
                 'method' => 'POST',
                 'timeout' => 20,
-                'redirection' => 5,
                 'httpversion' => '1.0',
-                'blocking' => true,
                 'body' => array(
-                    'api_email' => 'prabodamadushan@gmail.com',
-                    'api_key' => 'TfbWGY6EugIghpWHnvXt',
+                    'api_email' => $api_email,
+                    'api_key' => $api_key,
                     'pp_title' => $_POST['post_title'],
                     'pp_content' => $_POST['content'],
                     'pp_url' => get_permalink($post_id),
@@ -82,9 +85,11 @@ class PostPlayMetabox {
                     )
             );
 
+            $response_obj = json_decode(wp_remote_retrieve_body($response), true);
+
             if (is_wp_error($response)) {
                 $error_message = $response->get_error_message();
-            } else {
+            } elseif ($response_obj['status'] == 'success') {
                 update_post_meta($post_id, '_postplay_submit', $the_value);
             }
         }
