@@ -5,7 +5,8 @@ class PostPlayMetabox {
     public function PostPlayMetabox() {
         add_action('add_meta_boxes', array($this, 'register_meta_box'));
         add_action('save_post', array($this, 'save_meta_box'));
-    }
+        add_action('admin_notices', array($this, 'show_error_messages'));
+    }    
 
     /**
      * Register meta box(es).
@@ -91,7 +92,24 @@ class PostPlayMetabox {
                 $error_message = $response->get_error_message();
             } elseif ($response_obj['status'] == 'success') {
                 update_post_meta($post_id, '_postplay_submit', $the_value);
+            } elseif ($response_obj['status'] == 'error') {
+                $error_messages = $response_obj['messages'];
+                set_transient("_postplay_error_msg", ($error_messages[0]), 60);
             }
+        }
+    }
+    
+    /*
+     * 
+     * Show error messages
+     * 
+     */
+    
+    public function show_error_messages() {
+        global $post;
+        if (false !== ( $msg = get_transient("_postplay_error_msg") ) && $msg) {
+            delete_transient("_postplay_error_msg");
+            echo "<div id=\"postplay-plugin-message\" class=\"error notice notice-success is-dismissible postplay-error\"><p>PostPlay error: $msg.</p></div>";
         }
     }
 
