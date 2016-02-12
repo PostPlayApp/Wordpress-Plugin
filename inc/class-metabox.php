@@ -22,6 +22,7 @@ class PostPlayMetabox {
      */
     public function metabox_content($post) {
         wp_nonce_field('postplay_nonce_ver', 'postplay_meta_box_nonce');
+        $status = 
         include 'views/view-metabox.php';
     }
 
@@ -59,10 +60,10 @@ class PostPlayMetabox {
         }
 
         $the_value = sanitize_text_field($_POST['postplay_send']);
-        $api_email = esc_attr(get_option('_postplay_api_email'));
-        $api_key = esc_attr(get_option('_postplay_api_key'));
+        
+        $connector = new PostPlayConnector();
 
-        if (empty($api_email) || empty($api_key))
+        if (!$connector->checkIfApiDetailsAvailable())
             return;
 
         /*
@@ -72,28 +73,12 @@ class PostPlayMetabox {
          */
 
         if ($the_value == '1') {
-            $response = wp_remote_post('http://postplay.dev/api/v1/publish', array(
-                'method' => 'POST',
-                'timeout' => 20,
-                'httpversion' => '1.0',
-                'body' => array(
-                    'api_email' => $api_email,
-                    'api_key' => $api_key,
-                    'pp_title' => $_POST['post_title'],
-                    'pp_content' => $_POST['content'],
-                    'pp_url' => get_permalink($post_id),
-                )
-                    )
-            );
+            $response_obj = $connector->postJob($post_id, $_POST['post_title'], $_POST['content']);
 
-            $response_obj = json_decode(wp_remote_retrieve_body($response), true);
-
-            if (is_wp_error($response)) {
-                $error_message = $response->get_error_message();
-            } elseif ($response_obj['status'] == 'success') {
+            if ($response_obj->status == 'success') {
                 update_post_meta($post_id, '_postplay_submit', $the_value);
-            } elseif ($response_obj['status'] == 'error') {
-                $error_messages = $response_obj['messages'];
+            } elseif ($response_obj->status == 'error') {
+                $error_messages = $response_obj->messages;
                 set_transient("_postplay_error_msg", ($error_messages[0]), 60);
             }
         }

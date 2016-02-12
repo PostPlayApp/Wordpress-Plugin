@@ -31,11 +31,10 @@ class PostPlayOptions {
                 <?php settings_fields('postplay-options-group'); ?>
                 <?php
                 do_settings_sections('postplay-options-group');
-                $api_check = $this->checkApiStatus();
-                ?>
-                <?php
+                $ppConnector = new PostPlayConnector();
+                $api_check = $ppConnector->checkApiStatus();
                 if ($api_check) {
-                    echo '<div class="updated settings-error notice" style="background: #C7FF94;"><p>Your PostPlay account is verified and active! <b>- You have ' . $api_check->data->credits . ' credit' . (($api_check->data->credits == 1) ? '' : 's') . '.</b>' . (($api_check->data->credits < 2) ? ' <a href="#"><b>Add credits here.</b></a>' : '') . '</p></div>';
+                    echo '<div class="updated settings-error notice" style="background: #C7FF94;"><p>Your PostPlay account is verified and active! <b>- You have ' . $api_check->data->credits . ' credit' . (($api_check->data->credits == 1) ? '' : 's') . '.</b>' . (($api_check->data->credits < 2) ? ' <a href="#" style="float:right;"><b>Add credits here</b></a>' : '') . '</p></div>';
                 } else {
                     echo '<div class="error settings-error notice postplay-error"><p>Your PostPlay account is not active. Please activate by providing following Email Address and API key!</p></div>';
                 }
@@ -65,30 +64,6 @@ class PostPlayOptions {
             </form>
         </div>
         <?php
-    }
-
-    private function checkApiStatus() {
-        $response = wp_remote_post('http://postplay.dev/api/v1/verify_status', array(
-            'method' => 'POST',
-            'timeout' => 20,
-            'redirection' => 5,
-            'httpversion' => '1.0',
-            'blocking' => true,
-            'body' => array(
-                'api_email' => esc_attr(get_option('_postplay_api_email')),
-                'api_key' => esc_attr(get_option('_postplay_api_key')),
-            )
-                )
-        );
-
-        if (is_wp_error($response)) {
-            $error_message = $response->get_error_message();
-        } else {
-            $response_data = json_decode($response['body']);
-            if ($response_data->status == 'success')
-                return $response_data;
-        }
-        return FALSE;
     }
 
 }
