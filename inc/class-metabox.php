@@ -6,7 +6,7 @@ class PostPlayMetabox {
         add_action('add_meta_boxes', array($this, 'register_meta_box'));
         add_action('save_post', array($this, 'save_meta_box'));
         add_action('admin_notices', array($this, 'show_error_messages'));
-    }    
+    }
 
     /**
      * Register meta box(es).
@@ -22,7 +22,8 @@ class PostPlayMetabox {
      */
     public function metabox_content($post) {
         wp_nonce_field('postplay_nonce_ver', 'postplay_meta_box_nonce');
-        $status = 
+        $ppConnector = new PostPlayConnector();
+        $api_status = $ppConnector->checkApiStatus();
         include 'views/view-metabox.php';
     }
 
@@ -60,7 +61,7 @@ class PostPlayMetabox {
         }
 
         $the_value = sanitize_text_field($_POST['postplay_send']);
-        
+
         $connector = new PostPlayConnector();
 
         if (!$connector->checkIfApiDetailsAvailable())
@@ -83,13 +84,13 @@ class PostPlayMetabox {
             }
         }
     }
-    
+
     /*
      * 
      * Show error messages
      * 
      */
-    
+
     public function show_error_messages() {
         global $post;
         if (false !== ( $msg = get_transient("_postplay_error_msg") ) && $msg) {
