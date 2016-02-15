@@ -2,11 +2,12 @@
 
 class PostPlayConnector {
 
-    private $api_email, $api_key;
+    private $api_email, $api_key, $api_url;
 
     public function __construct() {
         $this->api_email = esc_attr(get_option('_postplay_api_email'));
         $this->api_key = esc_attr(get_option('_postplay_api_key'));
+        $this->api_key = 'http://postplay.dev/api/v1';
     }
 
     public function checkIfApiDetailsAvailable() {
@@ -16,7 +17,7 @@ class PostPlayConnector {
     }
 
     public function checkApiStatus() {
-        $response = wp_remote_post('http://postplay.dev/api/v1/verify_status', array(
+        $response = wp_remote_post($this->api_url . '/verify_status', array(
             'method' => 'POST',
             'timeout' => 20,
             'redirection' => 5,
@@ -52,7 +53,7 @@ class PostPlayConnector {
     }
 
     private function call($body) {
-        $response = wp_remote_post('http://postplay.dev/api/v1/publish', array(
+        $response = wp_remote_post($this->api_url . '/publish', array(
             'method' => 'POST',
             'timeout' => 20,
             'httpversion' => '1.0',
