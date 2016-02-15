@@ -1,13 +1,13 @@
 <div id="postp-metabox-wrap">
     <?php if ($api_status) : ?>
-    <div id="credit-bal">You have <?php echo $api_status->data->credits; ?> credits available</div>
+        <div id="credit-bal">You have <?php echo $api_status->data->credits; ?> credits available</div>
     <?php endif; ?>
     <p>Would you like this post in audio format as well?</p>
     <div id="credit-charge-wrap">
-        <div id="charge-display-oval">1</div>
+        <div id="charge-display-oval">0</div>
     </div>
     <h1 id="credits-spend">Credits</h1>
-    <h4 id="pp-words-count">160 Words</h4>
+    <h4 id="pp-words-count"><span class='count-dsp'>0</span> Words</h4>
 
     <div id="postp-switch-wrap">
         <div id="postp-switch">
@@ -32,4 +32,27 @@
         jQuery('.switch-split').toggleClass('active');
         toggleSendValue();
     });
+
+    function postplayWordCount(str) {
+        return str.split(" ").length;
+    }
+
+    function countContentLength() {
+        var textContent = tinymce.editors.content.getBody().textContent;
+        var theCount = postplayWordCount(textContent);
+        jQuery("#pp-words-count span.count-dsp").html(theCount);
+        jQuery('#charge-display-oval').html(Math.ceil((theCount / 1000)));
+    }
+
+
+    jQuery(document).on('ready', function () {
+        setTimeout(function () {
+            countContentLength();
+            tinymce.editors.content.on('change', function (e) {
+                countContentLength();
+            });
+        }, 1000);
+
+    });
+
 </script>
