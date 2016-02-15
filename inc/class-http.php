@@ -7,7 +7,7 @@ class PostPlayConnector {
     public function __construct() {
         $this->api_email = esc_attr(get_option('_postplay_api_email'));
         $this->api_key = esc_attr(get_option('_postplay_api_key'));
-        $this->api_key = 'http://postplay.dev/api/v1';
+        $this->api_url = 'http://postplay.io/api/v1';
     }
 
     public function checkIfApiDetailsAvailable() {
@@ -36,8 +36,9 @@ class PostPlayConnector {
             $response_data = json_decode(wp_remote_retrieve_body($response));
             if ($response_data->status == 'success')
                 return $response_data;
+            return FALSE;
         }
-        return FALSE;
+        
     }
 
     public function postJob($post_id, $title, $content) {
