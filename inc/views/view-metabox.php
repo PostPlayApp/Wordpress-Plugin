@@ -1,5 +1,7 @@
 <div id="postp-metabox-wrap">
-    <div id="credit-bal">You have 3 credits available</div>
+    <?php if ($api_status) : ?>
+    <div id="credit-bal">You have <?php echo $api_status->data->credits; ?> credits available</div>
+    <?php endif; ?>
     <p>Would you like this post in audio format as well?</p>
     <div id="credit-charge-wrap">
         <div id="charge-display-oval">1</div>
