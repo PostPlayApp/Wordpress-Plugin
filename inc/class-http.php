@@ -22,8 +22,8 @@ class PostPlayConnector {
             'api_key' => $this->api_key
                 )
         );
-        
-        if($response['status'] == 'success'){
+
+        if ($response['status'] == 'success') {
             return $response['body'];
         }
         return FALSE;
@@ -36,6 +36,7 @@ class PostPlayConnector {
             'pp_title' => $title,
             'pp_content' => $content,
             'pp_url' => get_permalink($post_id),
+            'pp_data' => array('site_title' => get_bloginfo('name'), 'site_url' => site_url())
         ));
 
         return $response['body'];
