@@ -7,7 +7,7 @@ class PostPlayConnector {
     public function __construct() {
         $this->api_email = esc_attr(get_option('_postplay_api_email'));
         $this->api_key = esc_attr(get_option('_postplay_api_key'));
-        $this->api_url = 'http://postplay.dev/api/v1';
+        $this->api_url = 'http://postplay.io/api/v1';
     }
 
     public function checkIfApiDetailsAvailable() {
@@ -30,13 +30,15 @@ class PostPlayConnector {
     }
 
     public function postJob($post_id, $title, $content) {
+        $callback_key = wp_generate_password(8, false);
+        update_post_meta($post_id, '_postplay_callback_key', $callback_key);
         $response = $this->call('/publish', array(
             'api_email' => $this->api_email,
             'api_key' => $this->api_key,
             'pp_title' => $title,
             'pp_content' => $content,
             'pp_url' => get_permalink($post_id),
-            'pp_data' => array('site_title' => get_bloginfo('name'), 'site_url' => site_url())
+            'pp_data' => array('site_title' => get_bloginfo('name'), 'site_url' => site_url(), 'post_id' => $post_id, 'callback_key' => $callback_key)
         ));
 
         return $response['body'];
