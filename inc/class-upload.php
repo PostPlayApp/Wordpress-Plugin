@@ -16,27 +16,27 @@ class PostPlayUploads {
             return TRUE;
         return FALSE;
     }
-    
-    private function deleteCallbackKey($post_id, $key){
+
+    private function deleteCallbackKey($post_id, $key) {
         delete_post_meta($post_id, '_postplay_callback_key', $key);
     }
 
-    public function downloadTheFile() {   
-        
-        
+    public function downloadTheFile() {
+
+
         if (empty($_REQUEST['postplay_callback']) || $_REQUEST['postplay_callback'] != 'run')
             return;
 
         if (empty($_REQUEST['post_id']) || empty($_REQUEST['key']) || empty($_REQUEST['file_url']))
             return;
-        
-       
+
+
 
         $post_id = $_REQUEST['post_id'];
         $key = $_REQUEST['key'];
         $file = $_REQUEST['file_url'];
         $file_name = $_REQUEST['file_name'];
-        
+
         //wp_send_json(array('status' => $file));
 
         if (!$this->verifyCallbackKey($post_id, $key))
@@ -54,29 +54,49 @@ class PostPlayUploads {
             'name' => $file_name,
             'tmp_name' => $tmp
         );
-        
+
 
         // Check for download errors
         if (is_wp_error($tmp)) {
             @unlink($file_array['tmp_name']);
-            wp_send_json(array('status' => 'error2', 'messages' => json_encode($tmp->get_error_message() )     ));
+            wp_send_json(array('status' => 'error2', 'messages' => json_encode($tmp->get_error_message())));
         }
 
         add_filter('upload_dir', array($this, 'upload_dir'));
-        $id = media_handle_sideload($file_array, $post_id);
+        $att_id = media_handle_sideload($file_array, $post_id);
         remove_filter('upload_dir', array($this, 'upload_dir'));
 
         // Check for handle sideload errors.
-        if (is_wp_error($id)) {
+        if (is_wp_error($att_id)) {
             @unlink($file_array['tmp_name']);
-            wp_send_json(array('status' => 'error3' , 'messages' => json_encode($tmp->get_error_message() )   ));
+            wp_send_json(array('status' => 'error3', 'messages' => json_encode($tmp->get_error_message())));
         }
 
-        $attachment_url = wp_get_attachment_url($id);
-        //TODO $this->deleteCallbackKey($post_id, $key);
+        $attachment_url = wp_get_attachment_url($att_id);
+        $this->addAudioFiletoPost($post_id, $id);
+        $this->deleteCallbackKey($post_id, $key);
         // Do whatever you have to here
         wp_send_json(array('status' => 'success', 'attachment_url' => $attachment_url));
-        
+    }
+
+    private function addAudioFiletoPost($post_id, $attachment_id) {
+        $current_data_str = get_post_meta($post_id, '_postplay_attachments', TRUE);
+        if (empty($current_data_str))
+            $current_data_str = serialize(array('attachments' => array()));
+
+        $current_data = unserialize($current_data_str);
+
+        $attachments_array = $current_data['attachments'];
+        if (!in_array($attachment_id, $attachments_array)) {
+            $attachments_array[] = intval($attachment_id);
+        }
+
+        $current_data['attachments'] = $attachments_array;
+
+        if (update_post_meta($post_id, '_postplay_attachments', serialize($current_data))) {
+            return TRUE;
+        }
+        return FALSE;
     }
 
 }
