@@ -72,11 +72,12 @@ class PostPlayUploads {
             wp_send_json(array('status' => 'error3', 'messages' => json_encode($tmp->get_error_message())));
         }
 
-        $attachment_url = wp_get_attachment_url($att_id);
-        $this->addAudioFiletoPost($post_id, $id);
-        $this->deleteCallbackKey($post_id, $key);
+        //$attachment_url = wp_get_attachment_url($att_id);
+        if($this->addAudioFiletoPost($post_id, $att_id)){
+            $this->deleteCallbackKey($post_id, $key);
+        }
         // Do whatever you have to here
-        wp_send_json(array('status' => 'success', 'attachment_url' => $attachment_url));
+        wp_send_json(array('status' => 'success'));
     }
 
     private function addAudioFiletoPost($post_id, $attachment_id) {
