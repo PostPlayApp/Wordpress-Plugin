@@ -18,8 +18,10 @@ class PostPlayOptions {
 
     public function register_options() {
         //register our settings
-        register_setting('postplay-options-group', '_postplay_api_email');
-        register_setting('postplay-options-group', '_postplay_api_key');
+        $options = array('_postplay_api_email', '_postplay_api_key', '_postplay_autopublish', '_postplay_player_position');
+        foreach ($options as $option) {
+            register_setting('postplay-options-group', $option);
+        }
     }
 
     public function settings_page() {
@@ -61,8 +63,20 @@ class PostPlayOptions {
                     <tr valign="top">
                         <th scope="row">Auto Publish</th>
                         <td>
-                            <label><input type="checkbox" class="" name="_postplay_autoplay" placeholder="API Key" value="yes" <?php echo (esc_attr(get_option('_postplay_autoplay')) == 'yes') ? 'checked' : ''; ?> /> Auto publish vocal player when available</label>
+                            <label><input type="checkbox" class="" name="_postplay_autopublish" placeholder="API Key" value="yes" <?php echo (esc_attr(get_option('_postplay_autopublish')) == 'yes') ? 'checked' : ''; ?> /> Auto publish vocal player when available</label>
                             <p class="description">Enabling this will automatically show vocal player in your post, after you accept the vocal clips in the PostPlay dashboard.</p>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <th scope="row">Player Position</th>
+                        <td>
+                            <?php $_postplay_player_position = get_option('_postplay_player_position'); ?>
+                            <select name="_postplay_player_position">
+                                <option value="bottom" <?php echo $_postplay_player_position == 'bottom' ? 'selected' : ''; ?>>At the end of the post</option>
+                                <option value="top" <?php echo $_postplay_player_position == 'top' ? 'selected' : ''; ?>>At the beginning of the post</option>
+                            </select>
+                            <p class="description">The position to display vocal player in the post.</p>
                         </td>
                     </tr>
                 </table>
