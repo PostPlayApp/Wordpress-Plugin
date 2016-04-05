@@ -18,7 +18,7 @@ class PostPlayOptions {
 
     public function register_options() {
         //register our settings
-        $options = array('_postplay_api_email', '_postplay_api_key', '_postplay_autopublish', '_postplay_player_position');
+        $options = array('_postplay_api_email', '_postplay_api_key', '_postplay_autopublish', '_postplay_player_position', '_postplay_player_color');
         foreach ($options as $option) {
             register_setting('postplay-options-group', $option);
         }
@@ -64,10 +64,10 @@ class PostPlayOptions {
                         <th scope="row">Auto Publish</th>
                         <td>
                             <label><input type="checkbox" class="" name="_postplay_autopublish" placeholder="API Key" value="yes" <?php echo (esc_attr(get_option('_postplay_autopublish')) == 'yes') ? 'checked' : ''; ?> /> Auto publish vocal player when available</label>
-                            <p class="description">Enabling this will automatically show vocal player in your post, after you accept the vocal clips in the PostPlay dashboard.</p>
+                            <p class="description">Enabling this will automatically show vocal player in your post, after you accept the vocal clips in the PostPlay dashboard.<br>If you disable this you can use [postplay-player] shortcode anywhere inside your post to show the player.</p>
                         </td>
                     </tr>
-                    
+
                     <tr>
                         <th scope="row">Player Position</th>
                         <td>
@@ -77,6 +77,15 @@ class PostPlayOptions {
                                 <option value="top" <?php echo $_postplay_player_position == 'top' ? 'selected' : ''; ?>>At the beginning of the post</option>
                             </select>
                             <p class="description">The position to display vocal player in the post.</p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th scope="row">Player Color</th>
+                        <td>
+                            <?php $_postplay_player_color = get_option('_postplay_player_color'); ?>
+                            <input type="text" name="_postplay_player_color" value="<?php echo $_postplay_player_color; ?>" class="postplay-color-field" data-default-color="#222" />
+                            <p class="description">Default color for your PostPlay vocal players.</p>
                         </td>
                     </tr>
                 </table>
