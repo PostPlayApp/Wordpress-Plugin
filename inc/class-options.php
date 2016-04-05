@@ -56,8 +56,17 @@ class PostPlayOptions {
                             <p class="description">Find your API key <a href="#">here</a>.</p>
                         </td>
                     </tr>
-
                 </table>
+                <table class="form-table">
+                    <tr valign="top">
+                        <th scope="row">Auto Publish</th>
+                        <td>
+                            <label><input type="checkbox" class="" name="_postplay_autoplay" placeholder="API Key" value="yes" <?php echo (esc_attr(get_option('_postplay_autoplay')) == 'yes') ? 'checked' : ''; ?> /> Auto publish vocal player when available</label>
+                            <p class="description">Enabling this will automatically show vocal player in your post, after you accept the vocal clips in the PostPlay dashboard.</p>
+                        </td>
+                    </tr>
+                </table>
+
 
                 <?php submit_button(); ?>
 
