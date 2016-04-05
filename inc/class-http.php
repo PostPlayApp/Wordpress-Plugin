@@ -36,7 +36,7 @@ class PostPlayConnector {
             'pp_title' => $title,
             'pp_content' => $content,
             'pp_url' => get_permalink($post_id),
-            'pp_data' => array('site_title' => get_bloginfo('name'), 'site_url' => site_url(), 'post_id' => $post_id, 'callback_key' => $callback_key)
+            'pp_data' => array('site_title' => get_bloginfo('name'), 'site_url' => site_url(), 'post_id' => $post_id)
         ));
 
         return $response['body'];
