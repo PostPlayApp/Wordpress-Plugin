@@ -79,7 +79,7 @@ class PostPlayMetabox {
             if ($response_obj->status == 'success') {
                 $resp_data = $response_obj->data;
                 update_post_meta($post_id, '_postplay_submit', $the_value);
-                update_post_meta($post_id, '_postplay_callback_key', $resp_data['callback_key']);
+                update_post_meta($post_id, '_postplay_callback_key', $resp_data->callback_key);
             } elseif ($response_obj->status == 'error') {
                 $error_messages = $response_obj->messages;
                 set_transient("_postplay_error_msg", ($error_messages[0]), 60);
