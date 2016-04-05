@@ -101,7 +101,6 @@ class PostPlay {
                     'src' => $attachment_url,
                     'loop' => '',
                     'autoplay' => '',
-                    'style' => 'width:100px !important;',
                     'preload' => 'none'
                 );
                 echo wp_audio_shortcode($attr);

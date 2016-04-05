@@ -29,9 +29,7 @@ class PostPlayConnector {
         return FALSE;
     }
 
-    public function postJob($post_id, $title, $content) {
-        $callback_key = wp_generate_password(8, false);
-        update_post_meta($post_id, '_postplay_callback_key', $callback_key);
+    public function postJob($post_id, $title, $content) {        
         $response = $this->call('/publish', array(
             'api_email' => $this->api_email,
             'api_key' => $this->api_key,
