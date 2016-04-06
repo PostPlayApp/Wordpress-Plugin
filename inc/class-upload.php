@@ -10,37 +10,27 @@ class PostPlayUploads {
         return $dirs;
     }
 
-    private function verifyCallbackKey($post_id, $key) {
-        $key_saved = get_post_meta($post_id, '_postplay_callback_key', TRUE);
-        if ($key == $key_saved)
-            return TRUE;
-        return FALSE;
-    }
-
     private function deleteCallbackKey($post_id, $key) {
         delete_post_meta($post_id, '_postplay_callback_key', $key);
     }
 
     public function downloadTheFile() {
 
-
-        if (empty($_REQUEST['postplay_callback']) || $_REQUEST['postplay_callback'] != 'run')
-            return;
-
-        if (empty($_REQUEST['post_id']) || empty($_REQUEST['key']) || empty($_REQUEST['file_url']))
+        if (empty($_REQUEST['postplay_callback']) || $_REQUEST['postplay_callback'] != 'run' || empty($_REQUEST['post_id']) || empty($_REQUEST['file_url']))
             return;
 
 
 
         $post_id = $_REQUEST['post_id'];
-        $key = $_REQUEST['key'];
+        $key = get_post_meta($post_id, '_postplay_callback_key', TRUE);
         $file = $_REQUEST['file_url'];
         $file_name = $_REQUEST['file_name'];
 
         //wp_send_json(array('status' => $file));
 
-        if (!$this->verifyCallbackKey($post_id, $key))
+        if (empty($key)){
             wp_send_json(array('status' => 'error1'));
+        }
 
         if (!function_exists('media_handle_upload')) {
             require_once(ABSPATH . "wp-admin" . '/includes/file.php');
@@ -48,8 +38,8 @@ class PostPlayUploads {
             require_once(ABSPATH . "wp-admin" . '/includes/image.php');
         }
 
-        $url = $file; // Input a .zip URL here
-        $tmp = download_url($url);
+        $url_with_key = sprintf($file, $key);
+        $tmp = download_url($url_with_key);
         $file_array = array(
             'name' => $file_name,
             'tmp_name' => $tmp
@@ -74,7 +64,7 @@ class PostPlayUploads {
 
         //$attachment_url = wp_get_attachment_url($att_id);
         if($this->addAudioFiletoPost($post_id, $att_id)){
-            $this->deleteCallbackKey($post_id, $key);
+            //$this->deleteCallbackKey($post_id, $key);
         }
         // Do whatever you have to here
         wp_send_json(array('status' => 'success'));
