@@ -1,7 +1,8 @@
 <div id="postp-metabox-wrap">
-    <?php if ($api_status) : ?>
-        <div id="credit-bal">You have <?php echo $api_status->data->credits; ?> credits available</div>
-    <?php endif; ?>
+    <?php if (!isset($api_status) || !isset($api_status->data) || !$api_status) : ?>
+        <p>Please check your PostPlay <a href="<?php echo admin_url('options-general.php?page=postplay-options'); ?>">API settings</a>.</p>
+    <?php else: ?>
+	<div id="credit-bal">You have <?php echo $api_status->data->credits; ?> credits available</div>
     <p>Would you like this post in audio format as well?</p>
     <div id="credit-charge-wrap">
         <div id="charge-display-oval">0</div>
@@ -16,6 +17,7 @@
             <input type="hidden" name="postplay_send" id="postplay_send" value="0">
         </div>
     </div>
+	<?php endif; ?>
 </div>
 
 <script>
