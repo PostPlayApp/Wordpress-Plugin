@@ -92,7 +92,8 @@ class PostPlay {
         ?>
         <ul class="postplay-audio-players">
             <?php
-            foreach ($attachments_array as $atta):
+			$atta = end($attachments_array);
+            //foreach ($attachments_array as $atta):
                 $attachment_url = wp_get_attachment_url($atta);
                 if ($attachment_url == false)
                     continue;
@@ -105,7 +106,7 @@ class PostPlay {
                 );
                 echo wp_audio_shortcode($attr);
                 echo '</li>';
-            endforeach;
+            //endforeach;
             ?>
         </ul>
         <?php
