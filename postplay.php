@@ -2,12 +2,12 @@
 
 /*
   Plugin Name: PostPlay
-  Plugin URI: http://postplay.com
-  Description: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+  Plugin URI: http://postplay.io
+  Description: PostPlay turns your content into human-read audio and provides audio analytics. 
   Version: 1.0
   Author: PostPlay
-  Author URI: http://postplay.com
-  License: GPLv2 or later
+  Author URI: http://postplay.io
+  Text Domain: wp-postplay
  */
 
 require_once 'inc/core-import.php';
