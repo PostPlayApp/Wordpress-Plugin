@@ -40,7 +40,7 @@
     }
 
     function countContentLength() {
-        var textContent = tinymce.editors.content.getBody().textContent;
+        var textContent = jQuery('#content').val();
         var theCount = postplayWordCount(textContent);
         jQuery("#pp-words-count span.count-dsp").html(theCount);
         jQuery('#charge-display-oval').html(Math.ceil((theCount / 1000)));
@@ -50,7 +50,7 @@
     jQuery(document).on('ready', function () {
         setTimeout(function () {
             countContentLength();
-            tinymce.editors.content.on('change', function (e) {
+            jQuery('#content').on('change', function (e) {
                 countContentLength();
             });
         }, 1000);
